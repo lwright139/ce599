@@ -1,0 +1,55 @@
+import geopandas as gp
+import matplotlib.pyplot as plt
+import shapely.speedups
+
+from shapely.geometry import LineString, MultiLineString, Polygon
+
+def read_data(filename):
+	gp.read_file(filename)
+
+lanes = 'Through Lanes/LN.shp'
+urban_areas = 'Urbanized Areas/FHWA_Urbanized_Areas_2010.shp'
+aux_lanes = 'Auxiliary Lanes/AL.shp'
+
+read_data(lanes)
+read_data(urban_areas)
+read_data(aux_lanes)
+
+print(‘do you need to map the path to those files you read?')
+
+print('Organize columns in both dataframes if they aren't done in first step')
+
+from pyproj import CRS
+def projky(data):
+	return data.to_crs(epsg=3089)
+	print(‘Check crs’) 
+
+projky(lanes)
+projky(urban_areas)
+projky(aux_lanes)
+	
+def run_overlays(layer1, layer2):
+	return gp.overlay(layer1, layer2, how='intersection')	
+	print('Are road linestrings split?')
+	print('Check to see if this includes only the roads inside the boundary')
+	print('Do we need to do a spatial join to link urban area names in attribute table?')
+
+intersection = run_overlays(urban_areas, lanes)
+intersection.plot(color='b')
+
+def split_by_urbarea(df):
+	return df.dissolve(by='Name')
+	#name refers to name of urban_area
+
+dissolved = split_by_urbarea(intersection)
+
+
+def rdwy_calc(df):
+	for every unit in df:
+		return df.MILES * df.LANES
+	#this needs work
+	
+	Print('Group by urban area')
+	Print('Calculate equation here (length*#lane') 
+
+	
